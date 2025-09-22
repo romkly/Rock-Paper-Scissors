@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rock Paper Scissors</title>
+</head>
+<body>
+    <style>
+        body {
+            background-color: black;
+            font-family: Arial;
+            color: white;
+        }
+
+        .title {
+            font-size: 30px;
+            font-weight: bold;
+        }
+
+        img {
+            height: 50px;
+        }
+
+        .move-button {
+            background-color: transparent;
+            border: 3px solid white;
+            width: 120px;
+            height: 120px;
+            border-radius: 60px;
+        }
+
+        button {
+            margin: 5px;
+            padding: 10px;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #ecf0f1;
+            cursor: pointer;
+        }
+
+        button:active {
+            background-color: #bdc3c7;
+        }
+
+        button:focus {
+            outline: none;
+            box-shadow: 0 0 5px #3498db;
+        }
+
+        .js-result {
+            font-size: 25px;
+            font-weight: bold;
+            margin-top: 50px;
+        }
+    </style>
+
+    <p class="title">Rock Paper Scissors</p>
+    <button class="move-button" onclick="playGame('Rock')">
+        <img src="assets/rock-emoji.png" alt="Rock">
+    </button>
+    <button class="move-button" onclick="playGame('Paper')">
+        <img src="assets/paper-emoji.png" alt="Paper">
+    </button>
+    <button class="move-button" onclick="playGame('Scissors')">
+        <img src="assets/scissors-emoji.png" alt="Scissors">
+    </button>
+    <p class="js-result"></p>
+    <p class="js-moves"></p>
+    <p id="js-score"></p>
+
+    <button onclick="
+        score.wins = 0;
+        score.losses = 0;
+        score.ties = 0;
+        localStorage.removeItem('rpsScore');
+        updateScore();
+    ">Reset Score</button>
+
+    <script>
+    // Retrieve score from localStorage or initialize if not present.
+    // Defensive coding for localStorage parsing is recommended in production.
+    const score = JSON.parse(localStorage.getItem('rpsScore')) || { wins: 0, losses: 0, ties: 0 };
+
+    // Initial UI update. Variables playerChoice, computerChoice, result are undefined here; consider initializing or updating only after a move.
+    updateScore();
+
+        // Update score display and persist to localStorage.
+        function updateScore() {
+            localStorage.setItem('rpsScore', JSON.stringify(score));
+            document.querySelector('#js-score').innerHTML = `Wins: ${score.wins}, Losses: ${score.losses}, Ties: ${score.ties}`;
+        }
+
+        // Main game logic: handles player move, computer move, result calculation, and UI update.
+        function playGame(playerChoice) {
+            // Math.random() is used for computer move. For true randomness, consider crypto APIs.
+            // This logic is simple and readable; for extensibility, use an array of moves and random index.
+            const randomNumber = Math.random();
+            let computerChoice = '';
+
+            if (randomNumber < 0.33) {
+                computerChoice = 'Rock';
+            } else if (randomNumber < 0.66) {
+                computerChoice = 'Paper';
+            } else {
+                computerChoice = 'Scissors';
+            }
+
+            // Game rules are hardcoded. For more moves (e.g., Lizard, Spock), use a rules matrix or object.
+            let result = '';
+            if (playerChoice === computerChoice) {
+                result = 'Tie.';
+            } else if (
+                (playerChoice === 'Rock' && computerChoice === 'Scissors') ||
+                (playerChoice === 'Paper' && computerChoice === 'Rock') ||
+                (playerChoice === 'Scissors' && computerChoice === 'Paper')
+            ) {
+                result = 'You win!';
+            } else {
+                result = 'You lose.';
+            }
+
+            // Update score object based on result.
+            if (result === 'You win!') {
+                score.wins++;
+            } else if (result === 'You lose.') {
+                score.losses++;
+            } else {
+                score.ties++;
+            }
+
+            // Persist score and update UI.
+            localStorage.setItem('rpsScore', JSON.stringify(score)); 
+            updateScore();
+
+            // Template literals used for dynamic UI updates.
+            // For accessibility, consider adding ARIA labels and improving semantic structure.
+            document.querySelector('.js-moves').innerHTML = `You
+                <img src="assets/${playerChoice}-emoji.png">
+                <img src="assets/${computerChoice}-emoji.png">
+                Computer`;
+            document.querySelector('.js-result').innerHTML = result;
+        }
+    </script>
+</body>
+</html>    
