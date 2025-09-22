@@ -19,7 +19,7 @@ A simple browser-based Rock Paper Scissors game implemented in vanilla JavaScrip
 ## Customization & Improvements
 - Move CSS and JS to separate files for better maintainability
 - Add more moves (e.g., Lizard, Spock)
-- Improve accessibility and responsiveness
+- Improve accessibility and responsivenessa
 - Add sound effects or animations
 - Implement multiplayer or online features
 
